@@ -1,0 +1,373 @@
+{
+  "cell_lines": [
+    "ACH-000001",
+    "ACH-000007",
+    "ACH-000008",
+    "ACH-000017",
+    "ACH-000018",
+    "ACH-000019",
+    "ACH-000028",
+    "ACH-000035",
+    "ACH-000046",
+    "ACH-000090",
+    "ACH-000097",
+    "ACH-000111",
+    "ACH-000115",
+    "ACH-000147",
+    "ACH-000148",
+    "ACH-000164",
+    "ACH-000169",
+    "ACH-000212",
+    "ACH-000219",
+    "ACH-000223",
+    "ACH-000232",
+    "ACH-000258",
+    "ACH-000264",
+    "ACH-000267",
+    "ACH-000273",
+    "ACH-000276",
+    "ACH-000277",
+    "ACH-000288",
+    "ACH-000291",
+    "ACH-000304",
+    "ACH-000311",
+    "ACH-000322",
+    "ACH-000335",
+    "ACH-000337",
+    "ACH-000338",
+    "ACH-000343",
+    "ACH-000348",
+    "ACH-000349",
+    "ACH-000352",
+    "ACH-000367",
+    "ACH-000374",
+    "ACH-000376",
+    "ACH-000384",
+    "ACH-000392",
+    "ACH-000395",
+    "ACH-000396",
+    "ACH-000401",
+    "ACH-000403",
+    "ACH-000416",
+    "ACH-000421",
+    "ACH-000424",
+    "ACH-000425",
+    "ACH-000428",
+    "ACH-000433",
+    "ACH-000447",
+    "ACH-000450",
+    "ACH-000451",
+    "ACH-000463",
+    "ACH-000473",
+    "ACH-000477",
+    "ACH-000480",
+    "ACH-000481",
+    "ACH-000486",
+    "ACH-000499",
+    "ACH-000504",
+    "ACH-000510",
+    "ACH-000511",
+    "ACH-000522",
+    "ACH-000530",
+    "ACH-000536",
+    "ACH-000545",
+    "ACH-000547",
+    "ACH-000551",
+    "ACH-000552",
+    "ACH-000555",
+    "ACH-000568",
+    "ACH-000571",
+    "ACH-000572",
+    "ACH-000573",
+    "ACH-000579",
+    "ACH-000582",
+    "ACH-000587",
+    "ACH-000589",
+    "ACH-000614",
+    "ACH-000615",
+    "ACH-000617",
+    "ACH-000621",
+    "ACH-000624",
+    "ACH-000644",
+    "ACH-000649",
+    "ACH-000651",
+    "ACH-000655",
+    "ACH-000657",
+    "ACH-000665",
+    "ACH-000668",
+    "ACH-000669",
+    "ACH-000680",
+    "ACH-000681",
+    "ACH-000696",
+    "ACH-000699",
+    "ACH-000702",
+    "ACH-000706",
+    "ACH-000713",
+    "ACH-000718",
+    "ACH-000720",
+    "ACH-000724",
+    "ACH-000730",
+    "ACH-000747",
+    "ACH-000750",
+    "ACH-000754",
+    "ACH-000757",
+    "ACH-000759",
+    "ACH-000768",
+    "ACH-000779",
+    "ACH-000783",
+    "ACH-000785",
+    "ACH-000788",
+    "ACH-000802",
+    "ACH-000810",
+    "ACH-000811",
+    "ACH-000817",
+    "ACH-000820",
+    "ACH-000825",
+    "ACH-000837",
+    "ACH-000849",
+    "ACH-000856",
+    "ACH-000859",
+    "ACH-000860",
+    "ACH-000861",
+    "ACH-000876",
+    "ACH-000880",
+    "ACH-000888",
+    "ACH-000892",
+    "ACH-000896",
+    "ACH-000900",
+    "ACH-000902",
+    "ACH-000906",
+    "ACH-000910",
+    "ACH-000915",
+    "ACH-000927",
+    "ACH-000930",
+    "ACH-000934",
+    "ACH-000943",
+    "ACH-000950",
+    "ACH-000958",
+    "ACH-000966",
+    "ACH-000968",
+    "ACH-000969",
+    "ACH-000971",
+    "ACH-000987",
+    "ACH-000997",
+    "ACH-001061",
+    "ACH-001151",
+    "ACH-001190",
+    "ACH-001196",
+    "ACH-001374",
+    "ACH-001390",
+    "ACH-001396",
+    "ACH-001418",
+    "ACH-001458",
+    "ACH-001685",
+    "ACH-001751",
+    "ACH-001819"
+  ],
+  "suggestions": [
+    {
+      "name": "C#Cc1cccc(Nc2ncnc3cc(OCCOC)c(OCCOC)cc23)c1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CC(=Cc1csc(C)n1)C1CC2OC2(C)CCCC(C)C(O)C(C)C(=O)C(C)(C)C(O)CC(=O)N1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CC(C)CC(NC(=O)C(Cc1ccccc1)NC(=O)c1cnccn1)B(O)O",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CN(Cc1cnc2nc(N)nc(N)c2n1)c1ccc(C(=O)NC(CCC(=O)O)C(=O)O)cc1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cn1nnc2c(C(N)=O)ncn2c1=O",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Nc1ncn(C2CC(O)C(CO)O2)c(=O)n1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CC(=O)OC1C(=O)C2(C)C(O)CC3OCC3(OC(C)=O)C2C(OC(=O)c2ccccc2)C2(O)CC(OC(=O)C(O)C(NC(=O)c3ccccc3)c3ccccc3)C(C)=C1C2(C)C",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CS(=O)(=O)CCNCc1ccc(-c2ccc3ncnc(Nc4ccc(OCc5cccc(F)c5)c(Cl)c4)c3c2)o1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cc1cn(-c2cc(NC(=O)c3ccc(C)c(Nc4nccc(-c5cccnc5)n4)c3)cc(C(F)(F)F)c2)cn1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "COC1C(=O)C2(C)C(OC)CC3OCC3(OC(C)=O)C2C(OC(=O)c2ccccc2)C2(O)CC(OC(=O)C(O)C(NC(=O)OC(C)(C)C)c3ccccc3)C(C)=C1C2(C)C",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "COc1cc2ncnc(Nc3ccc(F)c(Cl)c3)c2cc1OCCCN1CCOCC1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)cc2)cc1Nc1nccc(-c2cccnc2)n1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cc1ccc(Nc2nccc(N(C)c3ccc4c(C)n(C)nc4c3)n2)cc1S(N)(=O)=O",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "N#Cc1ccc(C(c2ccc(C#N)cc2)n2cncn2)cc1",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "O=C1c2c(O)ccc(O)c2C(=O)c2c(NCCNCCO)ccc(NCCNCCO)c21",
+      "score": 156.5481246,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "O=C(CCCCCCC(=O)Nc1ccccc1)NO",
+      "score": 126.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CCCS(=O)(=O)Nc1ccc(F)c(C(=O)c2c[nH]c3ncc(-c4ccc(Cl)cc4)cc23)c1F",
+      "score": 121.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CS(=O)(=O)c1ccc(C(=O)Nc2ccc(Cl)c(-c3ccccn3)c2)c(Cl)c1",
+      "score": 121.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "COc1cc2c(Nc3ccc(Br)cc3F)ncnc2cc1OCC1CCN(C)CC1",
+      "score": 109.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "NC(=O)NO",
+      "score": 108.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "N#CCC(C1CCCC1)n1cc(-c2ncnc3[nH]ccc23)cn1",
+      "score": 107.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CC(Oc1cc(-c2cnn(C3CCNCC3)c2)cnc1N)c1c(Cl)ccc(F)c1Cl",
+      "score": 101.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "O=C(c1ccc(OCCN2CCCCC2)cc1)c1c(-c2ccc(O)cc2)sc2cc(O)ccc12",
+      "score": 100.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CCC1(O)C(=O)OCc2c1cc1n(c2=O)Cc2cc3c(CN(C)C)c(O)ccc3nc2-1",
+      "score": 99.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cn1c(CCCC(=O)O)nc2cc(N(CCCl)CCCl)ccc21",
+      "score": 99.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "O=C(O)CCCc1ccc(N(CCCl)CCCl)cc1",
+      "score": 92.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CNC(=O)c1cc(Oc2ccc(NC(=O)Nc3ccc(Cl)c(C(F)(F)F)c3)cc2)ccn1",
+      "score": 91.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "CC(C)Cn1cnc2c(N)nc3ccccc3c21",
+      "score": 90.0,
+      "dataset": "Almanac"
+    },
+    {
+      "name": "Cc1nc(Nc2ncc(C(=O)Nc3c(C)cccc3Cl)s2)cc(N2CCN(CCO)CC2)n1",
+      "score": 90.0,
+      "dataset": "Almanac"
+    }
+  ],
+  "recommendations": {
+    "synergistic": [
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "COc1cc2ncnc(Nc3ccc(F)c(Cl)c3)c2cc1OCCCN1CCOCC1",
+        "cell_line": "ACH-001190",
+        "score": 156.5481246,
+        "dataset": "Almanac",
+        "classification": "SYNERGISTIC"
+      },
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "COc1cc2ncnc(Nc3ccc(F)c(Cl)c3)c2cc1OCCCN1CCOCC1",
+        "cell_line": "ACH-000551",
+        "score": 156.5481246,
+        "dataset": "Almanac",
+        "classification": "SYNERGISTIC"
+      },
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "CS(=O)(=O)CCNCc1ccc(-c2ccc3ncnc(Nc4ccc(OCc5cccc(F)c5)c(Cl)c4)c3c2)o1",
+        "cell_line": "ACH-000551",
+        "score": 156.5481246,
+        "dataset": "Almanac",
+        "classification": "SYNERGISTIC"
+      }
+    ],
+    "not_synergistic": [
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "N#Cc1ccc(C(c2ccc(C#N)cc2)n2cncn2)cc1",
+        "cell_line": "ACH-000551",
+        "score": -197.9169341,
+        "dataset": "Almanac",
+        "classification": "NOT SYNERGISTIC"
+      },
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "NC(=O)NO",
+        "cell_line": "ACH-000551",
+        "score": -197.9169341,
+        "dataset": "Almanac",
+        "classification": "NOT SYNERGISTIC"
+      },
+      {
+        "drug1": "CCC1(O)CC2CN(CCc3c([nH]c4ccccc34)C(C(=O)OC)(c3cc4c(cc3OC)N(C=O)C3C(O)(C(=O)OC)C(OC(C)=O)C5(CC)C=CCN6CCC43C65)C2)C1",
+        "drug2": "N#Cc1ccc(C(c2ccc(C#N)cc2)n2cncn2)cc1",
+        "cell_line": "ACH-000552",
+        "score": -197.9169341,
+        "dataset": "Almanac",
+        "classification": "NOT SYNERGISTIC"
+      }
+    ]
+  }
+}

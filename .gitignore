@@ -1,0 +1,6 @@
+# Generated processed datasets are reproducible from datasets/raw and datasets/signatures.
+datasets/processed/signature_features/
+datasets/processed/*_final_without_last_score.csv
+datasets/processed/*_final_without_last_score.xls
+datasets/processed/*_final_without_last_score.xlsx
+backend/models/*.joblib
