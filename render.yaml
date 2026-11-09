@@ -6,8 +6,8 @@ services:
     buildCommand: >-
       pip install -r backend/requirements.txt -r datasets/requirements-training.txt
       && python datasets/prepare_signature_features.py
-      && python -m backend.services.multi_dataset_xgboost_training
       && python datasets/compare_classical_holdout.py
+      && python backend/services/combined_feature_training.py
     startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --threads 4 backend.wsgi:app
     envVars:
       - key: PYTHON_VERSION

@@ -139,7 +139,9 @@ def main():
         "evaluation": {
             "protocol": "One grouped 80/20 holdout split by canonical unordered drug pair per dataset (random_state=42).",
             "repeats": 1, "folds": 1,
-            "coverage": "LASSO, Random Forest, AdaBoost, and XGBoost evaluated for Structure, DS, and DRS on all five datasets.",
+            "coverage": ("LASSO, Random Forest, AdaBoost, and XGBoost evaluated for Structure, DS, and DRS on all five "
+                         "datasets. The dashboard replaces the XGBoost rows with the signature-model run in "
+                         "results/combined_model_metrics.csv."),
             "models": list(MODELS), "datasets": list(PRECEDENCE),
             "feature_families": list(FAMILIES),
             "model_settings": {
@@ -151,8 +153,10 @@ def main():
             "precedence": "DrugComb > Almanac > DrugCombDB > OncologyScreen > Oneil",
             "score_handling": "Repeated scores for a canonical unordered drug pair and cell line are averaged within each source. The dashboard benchmarks each dataset separately.",
             "synergy_threshold": 10.0,
-            "selection": "Dashboard final predictions use the XGBoost family with the lowest holdout RMSE for the selected dataset.",
-            "limitations": "Single holdout estimates vary by split. SynergyX and repeated cross-validation are not included. This project uses categorical cell-line encoding rather than the author's 24,474-value cell-line graph vector, so results are not an exact reproduction of the paper.",
+            "selection": ("The website's final score comes from an XGBoost model trained on the DRS "
+                          "signature block (330 inputs), the method used in the research paper. "
+                          "Structure and DS models are baselines only."),
+            "limitations": "Single holdout estimates vary by split. SynergyX and repeated cross-validation are not included. This project uses categorical cell-line encoding rather than the author's 24,474-value cell-line graph vector, so results are not an exact reproduction of the paper. Synergy scores are not comparable across source datasets.",
         },
         "metrics": json_rows,
     }

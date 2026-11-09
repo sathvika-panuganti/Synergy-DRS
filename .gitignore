@@ -4,3 +4,10 @@ datasets/processed/*_final_without_last_score.csv
 datasets/processed/*_final_without_last_score.xls
 datasets/processed/*_final_without_last_score.xlsx
 backend/models/*.joblib
+
+# Local environments and caches
+.venv/
+backend/venv/
+__pycache__/
+*.pyc
+.vscode/

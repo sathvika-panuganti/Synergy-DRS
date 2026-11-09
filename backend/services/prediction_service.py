@@ -8,13 +8,13 @@ from pathlib import Path
 import joblib
 from rdkit import Chem
 from services.signature_features import (
-    make_signature_features,
-    make_structure_features,
+    FINAL_FAMILY,
+    make_family_frame,
     ordered_drugs,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
-MODEL_FILE = ROOT / "backend" / "models" / "xgboost_precedence_ensemble.joblib"
+MODEL_FILE = ROOT / "backend" / "models" / "combined_drs_structure_xgboost.joblib"
 
 PUBCHEM_TIMEOUT_SECONDS = 8
 
@@ -59,12 +59,55 @@ def _resolve_structure(value, label):
 
 @lru_cache(maxsize=1)
 def _load_model():
+    """Load the signature bundle. The DRS model serves; there is no fallback."""
     if not MODEL_FILE.exists():
         raise RuntimeError(
-            "The multi-dataset XGBoost model is not installed. Run `python -m backend.services.multi_dataset_xgboost_training` "
-            "from the repository root, then restart Flask."
+            "The DRS model is not installed. Run "
+            "`python backend/services/combined_feature_training.py` from the repository root, "
+            "then restart Flask."
         )
-    return joblib.load(MODEL_FILE)
+    bundle = joblib.load(MODEL_FILE)
+    if bundle.get("final_family") != FINAL_FAMILY:
+        raise RuntimeError(
+            f"{MODEL_FILE.name} was not produced by the current trainer "
+            f"(final family is {bundle.get('final_family')!r}, expected {FINAL_FAMILY!r}). "
+            "Retrain before serving predictions."
+        )
+    return bundle
+
+
+def _select_dataset(bundle, pair1, pair2, cell_line):
+    """Pick the source dataset whose model covers this pair and cell line.
+
+    The dataset is an internal routing decision only: every dataset is served by
+    its own DRS model, and the dataset name is not part of the reported score.
+    """
+    observed = bundle["observed_scores"].get((pair1, pair2, cell_line))
+    if observed:
+        return observed["dataset"], observed
+    dataset = next((name for name in bundle["precedence"]
+                    if pair1 in bundle["domains"][name]["drugs"]
+                    and pair2 in bundle["domains"][name]["drugs"]
+                    and cell_line in bundle["domains"][name]["cell_lines"]), None)
+    if dataset is not None:
+        return dataset, None
+
+    # Say which part of the input is unsupported rather than failing generically.
+    supported_drugs = set(bundle["supported_drugs"])
+    unsupported = [label for label, smiles in (("Drug 1", pair1), ("Drug 2", pair2))
+                   if smiles not in supported_drugs]
+    if unsupported:
+        raise ValueError(
+            f"{' and '.join(unsupported)} has no drug resistance signature in this project. "
+            f"The model covers the {len(supported_drugs)} compounds shared by LINCS and GDSC; "
+            "pick one of the suggested drugs."
+        )
+    if cell_line not in set(bundle["supported_cell_lines"]):
+        raise ValueError(f"'{cell_line}' is not one of the project's trained cell lines.")
+    raise ValueError(
+        "Both compounds are supported, but no source dataset covers this pair together with "
+        f"cell line {cell_line}. Try another cell line, or pick a recorded example."
+    )
 
 
 def predict(drug1_input, drug2_input, cell_line):
@@ -74,43 +117,53 @@ def predict(drug1_input, drug2_input, cell_line):
     bundle = _load_model()
     pair1, pair2 = ordered_drugs(drug1_smiles, drug2_smiles)
     cell_line = cell_line.strip()
-    observed = bundle["observed_scores"].get((pair1, pair2, cell_line))
-    if observed:
-        dataset = observed["dataset"]
-    else:
-        dataset = next((name for name in bundle["precedence"]
-                        if pair1 in bundle["domains"][name]["drugs"]
-                        and pair2 in bundle["domains"][name]["drugs"]
-                        and cell_line in bundle["domains"][name]["cell_lines"]), None)
-        if dataset is None:
-            raise ValueError("No project dataset contains both compounds and this cell line in its supported domain.")
+    dataset, observed = _select_dataset(bundle, pair1, pair2, cell_line)
 
-    feature_builders = {
-        "Structure": lambda: make_structure_features(pair1, pair2, cell_line),
-        "DS": lambda: make_signature_features(pair1, pair2, cell_line, "DS"),
-        "DRS": lambda: make_signature_features(pair1, pair2, cell_line, "DRS"),
-    }
-    scores = {}
-    for family, build_features in feature_builders.items():
-        model_info = bundle["models"][dataset][family]
-        scores[family] = float(model_info["model"].predict(build_features())[0])
-    selected_family = bundle["best_feature_family"][dataset]
-    score = scores[selected_family]
-    score_sources = ([
-        {"dataset": observed["dataset"], "score": round(float(observed["score"]), 4)}
-    ] + [
-        {"dataset": item["dataset"], "score": round(float(item["score"]), 4)}
-        for item in observed.get("other_sources", [])
-    ]) if observed else []
+    entry = bundle["models"][dataset][FINAL_FAMILY]
+    # Raises ValueError when a DRS signature is missing, so the API reports the
+    # gap instead of scoring an incomplete feature vector.
+    features = make_family_frame(FINAL_FAMILY, pair1, pair2, cell_line,
+                                 entry["cell_line_categories"])
+    expected = list(entry["feature_columns"])
+    if list(features.columns) != expected:
+        raise RuntimeError(
+            "DRS feature layout does not match the trained model "
+            f"({len(features.columns)} built vs {len(expected)} expected). Retrain the model."
+        )
+    score = float(entry["model"].predict(features)[0])
+
+    # Every feature family is scored for the same input so the UI can compare
+    # them side by side; only the DRS model's score is the final answer.
+    family_scores = []
+    for family in ("Structure", "DS", "DRS"):
+        model_entry = bundle["models"][dataset].get(family)
+        if not model_entry:
+            continue
+        if family == FINAL_FAMILY:
+            value = score
+        else:
+            frame = make_family_frame(family, pair1, pair2, cell_line,
+                                      model_entry["cell_line_categories"])
+            value = float(model_entry["model"].predict(frame)[0])
+        metrics = model_entry["metrics"]
+        family_scores.append({
+            "family": family,
+            "score": round(value, 4),
+            "final": family == FINAL_FAMILY,
+            "n_features": len(model_entry["feature_columns"]) - 1,
+            "rmse": round(float(metrics["RMSE"]), 4),
+            "mae": round(float(metrics["MAE"]), 4),
+            "r2": round(float(metrics["R2"]), 4),
+        })
+
     return {
         "score": round(score, 4),
         "classification": "SYNERGISTIC REACTION" if score > 10 else "NOT A SYNERGISTIC REACTION",
-        "scores": {family: round(value, 4) for family, value in scores.items()},
-        "selected_model": f"XGBoost + {selected_family}",
-        "dataset_selection": "observed-score precedence" if observed else "first supported dataset by precedence",
-        "observed_score": round(float(observed["score"]), 4) if observed else None,
-        "observed_dataset": observed["dataset"] if observed else None,
-        "score_sources": score_sources,
+        "model": "XGBoost",
+        "feature_family": FINAL_FAMILY,
+        "selected_model": f"XGBoost · {FINAL_FAMILY}",
+        "n_features": len(expected) - 1,
+        "family_scores": family_scores,
         "drug1_input": original_drug1,
         "drug2_input": original_drug2,
         "drug1_smiles": drug1_smiles,
@@ -118,7 +171,4 @@ def predict(drug1_input, drug2_input, cell_line):
         "drug1_resolved": drug1_resolved,
         "drug2_resolved": drug2_resolved,
         "cell_line": cell_line,
-        "model": "XGBoost",
-        "dataset": dataset,
-        "selected_feature_family": selected_family,
     }

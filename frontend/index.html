@@ -17,7 +17,7 @@
     <main id="top">
         <section class="hero">
             <div><span class="eyebrow">COMBINATION THERAPY RESEARCH</span>
-                <h1>Explore drug synergy<br><em>with evidence.</em></h1>
+                <h1>Explore drug synergy<br></h1>
                 <p>Research interface for combination response modelling. Explore recorded model evaluations and submit
                     a combination for scoring when a fitted model is configured.</p><a class="button primary"
                     href="#predict">Open prediction tool ↓</a>
@@ -25,7 +25,8 @@
             <div class="hero-card">
                 <div class="orb">✳</div><span>DATA INFORMED</span>
                 <h3>Five research datasets</h3>
-                <p>Choose from compounds and cell lines represented in the supported research datasets.</p><a href="#performance">See available
+                <p>Choose from compounds and cell lines represented in the supported research datasets.</p><a
+                    href="#performance">See available
                     evaluations →</a>
             </div>
         </section>
@@ -33,15 +34,20 @@
             <div class="section-heading">
                 <div><span class="eyebrow">01 / PREDICTION WORKSPACE</span>
                     <h2>Drug Synergy Prediction</h2>
-                    <p>Enter a drug name or molecular SMILES for each compound, then choose a cell line. Predictions are available for compounds with DRS signatures in the project dataset.</p>
+                    <p>Enter a drug name or molecular SMILES for each compound, then choose a cell line. The final
+                        score comes from an XGBoost model that reads the Drug Resistance Signature of both compounds,
+                        the method used in the research paper.</p>
                 </div>
             </div>
             <div class="workspace">
                 <form id="predict-form" class="panel"><label>Drug 1 name or SMILES<input id="drug1" name="drug1"
-                            placeholder="Choose a suggested drug or enter a supported SMILES" autocomplete="off" required><small>The DRS model supports 86 compounds; drug names are resolved through PubChem and then checked against that set.</small>
+                            placeholder="Choose a suggested drug or enter a supported SMILES" autocomplete="off"
+                            required><small>The DRS model supports 86 compounds; drug names are resolved through PubChem
+                            and then checked against that set.</small>
                         <div id="suggestions1" class="suggestions"></div>
                     </label><label>Drug 2 name or SMILES<input id="drug2" name="drug2"
-                            placeholder="Choose a suggested drug or enter a supported SMILES" autocomplete="off" required><small>Only compounds with an author-provided DRS signature can be scored.</small>
+                            placeholder="Choose a suggested drug or enter a supported SMILES" autocomplete="off"
+                            required><small>Only compounds with an author-provided DRS signature can be scored.</small>
                         <div id="suggestions2" class="suggestions"></div>
                     </label><label>Cell line<select id="cell-line" name="cell_line" required>
                             <option value="">Loading cell lines…</option>
@@ -54,8 +60,15 @@
                 <div class="section-heading">
                     <div><span class="eyebrow">RECORDED COMBINATION EXAMPLES</span>
                         <h2>Try a combination</h2>
-                        <p>Supported Oneil combinations are shown as examples. Choose one to fill the prediction form.</p>
+                        <p>Recorded combinations pooled from Almanac, DrugComb, DrugCombDB, OncologyScreen and Oneil.
+                            Reversed pairs and cross-dataset repeats are collapsed into a single entry. Selecting one
+                            fills both drugs and the cell line, ready to submit to the DRS model.</p>
                     </div>
+                </div>
+                <div class="recommendation-toolbar">
+                    <label class="search-label">Filter examples<input id="recommendation-search" type="search"
+                            placeholder="Search by drug name or cell line" autocomplete="off"></label>
+                    <span id="recommendation-count" class="notice"></span>
                 </div>
                 <div id="recommendation-groups" class="recommendation-groups">
                     <p class="notice">Loading recorded examples…</p>
@@ -65,47 +78,85 @@
         <section id="performance" class="section">
             <div class="section-heading">
                 <div><span class="eyebrow">02 / RECORDED EVALUATION</span>
-                    <h2>Structure, DS, and DRS comparison</h2>
-                    <p>One grouped 80/20 holdout per dataset. LASSO, Random Forest, AdaBoost, and XGBoost compare Structure, DS, and DRS features across all five datasets.</p>
+                    <h2>Structure, DS, and DRS</h2>
+                    <p>One grouped 80/20 holdout per dataset, split by canonical unordered drug pair so no pair
+                        appears in both training and test. The DRS model is the one that serves predictions; Structure
+                        and DS are baselines trained in the same run.</p>
                 </div>
             </div>
             <div id="best-card" class="best-card">Loading comparison coverage…</div>
+
             <div class="performance-visual">
                 <div class="chart-toolbar">
                     <label>Dataset<select id="dataset-filter"></select></label>
                     <label>Model<select id="model-filter"></select></label>
-                    <label>Metric<select id="metric-filter"><option value="rmse_mean">RMSE</option><option value="mse_mean">MSE</option><option value="mae_mean">MAE</option><option value="r2_mean">R²</option><option value="explainedvariance_mean">Explained variance</option><option value="pearson_mean">Pearson</option><option value="spearman_mean">Spearman</option><option value="auc_mean">AUC</option></select></label>
+                    <label>Metric<select id="metric-filter">
+                            <option value="rmse_mean">RMSE</option>
+                            <option value="mse_mean">MSE</option>
+                            <option value="mae_mean">MAE</option>
+                            <option value="r2_mean">R²</option>
+                            <option value="pearson_mean">Pearson</option>
+                            <option value="spearman_mean">Spearman</option>
+                        </select></label>
                 </div>
-                <div class="single-chart"><p id="chart-note" class="notice" hidden>Select one dataset to plot comparable scores. The complete table below lists all five datasets.</p><div id="comparison-chart" class="chart-svg" role="img" aria-label="Model performance comparison"></div></div>
+                <div class="single-chart">
+                    <p id="chart-note" class="notice" hidden>Select one dataset to plot comparable scores. The complete
+                        table below lists all five datasets.</p>
+                    <div id="comparison-chart" class="chart-svg" role="img" aria-label="Model performance comparison">
+                    </div>
+                </div>
             </div>
+
+            <div class="figure-grid">
+                <figure class="figure-card">
+                    <figcaption><b>Figure 1.</b> Feature-family comparison — MAE, RMSE and R² across Structure, DS
+                        and DRS.</figcaption>
+                    <div class="chart-toolbar compact">
+                        <label>Dataset<select id="family-dataset"></select></label>
+                    </div>
+                    <div id="family-chart" class="chart-svg"></div>
+                </figure>
+                <figure class="figure-card">
+                    <figcaption><b>Figure 2.</b> Actual versus predicted synergy on the held-out drug pairs, with the
+                        ideal <i>y = x</i> reference line.</figcaption>
+                    <div id="scatter-chart" class="chart-svg"></div>
+                </figure>
+                <figure class="figure-card wide">
+                    <figcaption><b>Figure 3.</b> Prediction error distribution (predicted − actual) on the held-out
+                        pairs, with the zero-error reference line.</figcaption>
+                    <div id="residual-chart" class="chart-svg"></div>
+                </figure>
+                <figure class="figure-card wide">
+                    <figcaption><b>Figure 4.</b> Dataset comparison — held-out R² per feature family across all five
+                        datasets.</figcaption>
+                    <div id="dataset-chart" class="chart-svg"></div>
+                </figure>
+            </div>
+
             <details class="metrics-details" open>
                 <summary>View all model scores <span id="row-count"></span></summary>
                 <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Dataset</th>
-                            <th>Feature Family</th>
-                            <th>Model</th>
-                            <th>MSE</th>
-                            <th>RMSE</th>
-                            <th>MAE</th>
-                            <th>R²</th>
-                            <th>Explained variance</th>
-                            <th>Pearson</th>
-                            <th>Spearman</th>
-                            <th>AUC</th>
-                            <th>Test Rows</th>
-                        </tr>
-                    </thead>
-                    <tbody id="metrics-body">
-                        <tr>
-                            <td colspan="12">Loading evaluation data…</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Dataset</th>
+                                <th scope="col">Feature Family</th>
+                                <th scope="col">Model</th>
+                                <th scope="col">MSE</th>
+                                <th scope="col">RMSE</th>
+                                <th scope="col">MAE</th>
+                                <th scope="col">R²</th>
+                                <th scope="col">Pearson</th>
+                                <th scope="col">Spearman</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-body">
+                            <tr>
+                                <td colspan="9">Loading evaluation data…</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <p class="footnote">Each value is from one 80/20 test split grouped by canonical drug pair. Metrics are estimated independently within each dataset; compare models within the same dataset because score scales differ. Single-holdout estimates can vary with the split and are not repeated cross-validation estimates. SynergyX is excluded. This project uses categorical cell-line encoding rather than the author paper’s 24,474-value cell-line graph vector, so results are not an exact reproduction of the paper.</p>
             </details>
         </section>
     </main>
@@ -114,5 +165,3 @@
 </body>
 
 </html>
-
-

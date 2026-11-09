@@ -10,3 +10,25 @@
 .score-breakdown{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:18px 0 8px}.family-score{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.family-score span{font-size:12px;color:var(--muted)}.family-score b{font-size:18px;color:var(--text)}.result-reference{margin:10px 0 0;padding:12px 14px;border-radius:8px;background:var(--surface);font-size:12px;color:var(--muted);line-height:1.6}@media(max-width:700px){.score-breakdown{grid-template-columns:1fr}}
 
 .single-chart{height:300px}.chart-svg{width:100%;height:100%}.chart-svg svg{width:100%;height:100%;overflow:visible}.chart-tick,.chart-label,.chart-axis-title{fill:var(--muted);font-family:'DM Sans',sans-serif}.chart-tick{font-size:11px}.chart-label{font-size:10px}.chart-axis-title{font-size:12px}.single-chart #chart-note{margin:20px 0}
+
+/* DRS model: result extras, pooled examples, research figures */
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}@keyframes spin{to{transform:rotate(360deg)}}
+.result-extra{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}.result-extra summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--accent)}.result-extra small{display:block;color:var(--muted);font-size:11px;line-height:1.6}
+.recommendation-toolbar{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap}.search-label{display:grid;gap:6px;font-size:11px;font-weight:700;color:var(--muted);flex:1 1 280px}.search-label input{padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:13px 'DM Sans'}.recommendation-list{max-height:430px;overflow-y:auto;padding-right:4px}
+.figure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}.figure-card{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}.figure-card.wide{grid-column:1/-1}.figure-card figcaption{font-size:12px;line-height:1.6;color:var(--muted);margin-bottom:12px}.figure-card figcaption b{color:var(--text)}.figure-card .chart-svg{height:auto}.figure-card .chart-svg svg{height:auto}.chart-toolbar.compact{margin-bottom:8px}.chart-toolbar.compact select{min-width:170px}
+.chart-gridline{stroke:var(--line);stroke-width:1}.chart-axis{stroke:var(--line);stroke-width:1.2}.chart-reference{stroke:var(--muted);stroke-width:1.4;stroke-dasharray:6 4}.chart-value,.chart-label-small{fill:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px}.chart-value{font-weight:700}.chart-value-light{fill:#fff;font:700 10px 'DM Sans',sans-serif}
+.tag{display:inline-block;padding:3px 8px;border-radius:20px;background:var(--pale);color:var(--muted);font-size:10px;font-weight:700}.tag.final{background:#b4530a;color:#fff}.final-row td{color:var(--text);font-weight:600}
+@media(max-width:860px){.figure-grid{grid-template-columns:1fr}}
+
+/* Feature-family score comparison inside the prediction result */
+.model-comparison{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}.model-comparison .eyebrow{display:block;margin-bottom:12px}
+.model-score-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.model-score{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:104px;padding:16px 18px;border:1px solid var(--line);border-left:4px solid var(--family-color,var(--accent));border-radius:10px;background:var(--surface)}
+.model-score-name{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.3px}
+.model-score-name em{display:block;font-style:normal;font-size:9px;letter-spacing:1px;color:var(--family-color);margin-top:3px}
+.model-score b{display:block;font:800 28px/1.1 Manrope;color:var(--text);margin:10px 0 0}
+.model-score small{display:block;font-size:10px;line-height:1.5;color:var(--muted)}
+.model-score.final{background:var(--pale);border-color:var(--family-color)}
+.model-score.final b{color:var(--family-color);font-size:30px}
+/* Three cards: keep them on one row, then stack, so none is left orphaned. */
+@media(max-width:560px){.model-score-grid{grid-template-columns:1fr}}

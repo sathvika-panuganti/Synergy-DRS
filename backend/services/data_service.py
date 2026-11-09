@@ -1,19 +1,21 @@
+"""Options, recorded combination examples, and the evaluation report for the UI."""
 from pathlib import Path
 from functools import lru_cache
-import joblib
-import pandas as pd
 import json
 
+import joblib
+
 ROOT = Path(__file__).resolve().parents[2]
-DATASETS = {
-    "Almanac": "AlmanacLINCS_PRISM.csv",
-    "DrugComb": "DrugComb_LINCS_PRISM.csv",
-    "DrugCombDB": "DrugCombDBLINCS_PRISM.csv",
-    "OncologyScreen": "OncologyScreenLINCS_PRISM.csv",
-    "Oneil": "OneilLINCS_PRISM.csv",
-}
-MODEL_FILES = {"AdaBoost": "adaboost_separate_dataset_metrics.xls", "Lasso": "lasso_separate_dataset_metrics.xls", "Random Forest": "random_forest_separate_dataset_metrics.xls", "XGBoost": "xgboost_separate_dataset_metrics.xls"}
-PREDICTION_MODEL = ROOT / "backend" / "models" / "xgboost_precedence_ensemble.joblib"
+PREDICTION_MODEL = ROOT / "backend" / "models" / "combined_drs_structure_xgboost.joblib"
+DRUG_NAMES_FILE = ROOT / "datasets" / "metadata" / "drug_names.json"
+METRICS_FILE = ROOT / "frontend" / "data" / "metrics.json"
+REPORT_FILE = ROOT / "frontend" / "data" / "model_report.json"
+OPTIONS_FALLBACK = ROOT / "frontend" / "data" / "options.json"
+
+SYNERGY_THRESHOLD = 10.0
+EXAMPLES_PER_GROUP = 24
+SUGGESTION_LIMIT = 60
+
 
 @lru_cache(maxsize=1)
 def _prediction_bundle():
@@ -22,60 +24,85 @@ def _prediction_bundle():
     return joblib.load(PREDICTION_MODEL)
 
 
-def _prediction_domain():
-    bundle = _prediction_bundle()
-    if bundle is None:
-        return None
-    return set(bundle.get("supported_drugs", [])), set(bundle.get("supported_cell_lines", []))
+@lru_cache(maxsize=1)
+def _drug_names():
+    """Optional SMILES -> common drug name map, used only for display labels."""
+    if not DRUG_NAMES_FILE.exists():
+        return {}
+    try:
+        with DRUG_NAMES_FILE.open(encoding="utf-8") as stream:
+            data = json.load(stream)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return {str(key): str(value) for key, value in data.items() if value}
 
-def _read_dataset(path):
-    if path.suffix.lower() in (".xls", ".xlsx"):
-        try:
-            return pd.read_excel(path)
-        except Exception:
-            # Some project files use an .xls suffix but contain CSV text.
-            return pd.read_csv(path, low_memory=False)
-    return pd.read_csv(path, low_memory=False)
 
+def _label(smiles):
+    return _drug_names().get(smiles, "")
+
+
+@lru_cache(maxsize=1)
 def get_options():
-    options_path = ROOT / "frontend" / "data" / "options.json"
+    """Cell lines, drug suggestions, and recorded examples pooled over all datasets."""
     bundle = _prediction_bundle()
     if bundle is None:
-        with options_path.open(encoding="utf-8") as file:
-            return json.load(file)
+        with OPTIONS_FALLBACK.open(encoding="utf-8") as stream:
+            return json.load(stream)
 
-    cells = bundle.get("supported_cell_lines", [])
-    suggestions = {}
-    scored_rows = []
+    names = _drug_names()
+    supported_cells = set(bundle.get("supported_cell_lines", []))
+    rows, best_for_drug = [], {}
+    # observed_scores is already pooled across Almanac, DrugComb, DrugCombDB,
+    # OncologyScreen and Oneil and keyed by canonical unordered pair + cell line,
+    # so reversed pairs and cross-dataset duplicates collapse to one entry.
     for (drug1, drug2, cell_line), observed in bundle.get("observed_scores", {}).items():
+        if not drug1 or not drug2 or not cell_line or cell_line not in supported_cells:
+            continue
         score = float(observed["score"])
-        scored_rows.append({
-            "drug1": drug1, "drug2": drug2, "cell_line": cell_line,
-            "score": score, "dataset": observed["dataset"],
+        rows.append({
+            "drug1": drug1, "drug2": drug2, "cell_line": cell_line, "score": score,
+            "drug1_label": names.get(drug1, ""), "drug2_label": names.get(drug2, ""),
         })
         for drug in (drug1, drug2):
-            if drug not in suggestions or score > suggestions[drug]["score"]:
-                suggestions[drug] = {"name": drug, "score": score, "dataset": observed["dataset"]}
-    synergistic = sorted((row for row in scored_rows if row["score"] > 10), key=lambda row: row["score"], reverse=True)[:3]
-    not_synergistic = sorted((row for row in scored_rows if row["score"] <= 10), key=lambda row: row["score"])[:3]
-    recommendations = {
-        "synergistic": [{**row, "classification": "SYNERGISTIC"} for row in synergistic],
-        "not_synergistic": [{**row, "classification": "NOT SYNERGISTIC"} for row in not_synergistic],
-    }
+            if drug not in best_for_drug or score > best_for_drug[drug]["score"]:
+                best_for_drug[drug] = {"name": drug, "label": names.get(drug, ""), "score": score}
+
+    synergistic = sorted((row for row in rows if row["score"] > SYNERGY_THRESHOLD),
+                         key=lambda row: row["score"], reverse=True)[:EXAMPLES_PER_GROUP]
+    not_synergistic = sorted((row for row in rows if row["score"] <= SYNERGY_THRESHOLD),
+                             key=lambda row: row["score"])[:EXAMPLES_PER_GROUP]
+
+    # Recorded scores decide which group an example belongs to, but they are not
+    # published: the UI shows only the combination, so nothing competes with the
+    # model's own predicted score.
+    def example(row, classification):
+        return {key: value for key, value in row.items() if key != "score"} | {
+            "classification": classification}
+
+    suggestions = [{"name": item["name"], "label": item["label"]}
+                   for item in sorted(best_for_drug.values(), key=lambda item: item["score"],
+                                      reverse=True)[:SUGGESTION_LIMIT]]
     return {
-        "cell_lines": sorted(cells),
-        "suggestions": sorted(suggestions.values(), key=lambda item: item["score"], reverse=True)[:30],
-        "recommendations": recommendations,
+        "cell_lines": sorted(supported_cells),
+        "suggestions": suggestions,
+        "recommendations": {
+            "synergistic": [example(row, "SYNERGISTIC") for row in synergistic],
+            "not_synergistic": [example(row, "NOT SYNERGISTIC") for row in not_synergistic],
+        },
+        "example_pool_size": len(rows),
+        "final_model": bundle.get("final_family", ""),
     }
+
+
+def _read_json(path):
+    if not path.exists():
+        return None
+    with path.open(encoding="utf-8") as stream:
+        return json.load(stream)
+
 
 def get_dashboard_data():
-    path = ROOT / "frontend" / "data" / "metrics.json"
-    with path.open(encoding="utf-8") as file:
-        return json.load(file)
-
-def _num(value):
-    try:
-        number = float(value)
-        return number if pd.notna(number) else None
-    except (TypeError, ValueError):
-        return None
+    """Recorded evaluation: the legacy model comparison plus the signature-model run."""
+    dashboard = _read_json(METRICS_FILE) or {"evaluation": {}, "metrics": []}
+    dashboard["report"] = _read_json(REPORT_FILE)
+    return dashboard
