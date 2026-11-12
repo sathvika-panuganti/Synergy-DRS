@@ -39,7 +39,7 @@ async function loadOptions() {
   } catch (apiError) {
     // Keep the cell-line selector usable when opened through a static server.
     try {
-      const response = await fetch('data/options.json');
+      const response = await fetch('/assets/data/options.json');
       if (!response.ok) throw new Error('Local options file could not be loaded');
       apply(await response.json());
     } catch (fallbackError) {
@@ -244,8 +244,8 @@ async function loadMetrics() {
   } catch (apiError) {
     // The evaluation report is bundled so Live Server can display it too.
     const [metrics, report] = await Promise.all([
-      fetch('data/metrics.json').then(response => response.ok ? response.json() : null),
-      fetch('data/model_report.json').then(response => response.ok ? response.json() : null).catch(() => null),
+      fetch('/assets/data/metrics.json').then(response => response.ok ? response.json() : null),
+      fetch('/assets/data/model_report.json').then(response => response.ok ? response.json() : null).catch(() => null),
     ]);
     if (!metrics) throw new Error('Could not load the evaluation report');
     data = {...metrics, report};

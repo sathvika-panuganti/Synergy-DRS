@@ -17,6 +17,7 @@ SIGNATURE_COLUMNS = (
 )
 
 
+@lru_cache(maxsize=4096)
 def canonical_smiles(value):
     molecule = Chem.MolFromSmiles(str(value))
     if molecule is None:
@@ -181,7 +182,7 @@ def pair_signature_vector(canonical1, canonical2, family="DRS"):
     ])
 
 
-def make_family_frame(family, canonical1, canonical2, cell_line, cell_line_categories=None):
+def make_family_frame(family, canonical1, canonical2, cell_line, cell_line_categories=None, feature_columns=None):
     """One-row frame for any feature family trained by the signature trainer."""
     import pandas as pd
 
@@ -193,6 +194,9 @@ def make_family_frame(family, canonical1, canonical2, cell_line, cell_line_categ
     else:
         raise ValueError(f"Unknown feature family: {family}")
     frame = pd.DataFrame(values.astype(np.float32).reshape(1, -1), columns=columns)
+    if feature_columns is not None:
+        needed_cols = [c for c in feature_columns if c != "cellline"]
+        frame = frame[needed_cols]
     categories = list(cell_line_categories) if cell_line_categories is not None else [str(cell_line)]
     frame["cellline"] = pd.Categorical([str(cell_line)], categories=categories)
     return frame

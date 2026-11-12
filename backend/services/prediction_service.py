@@ -120,11 +120,12 @@ def predict(drug1_input, drug2_input, cell_line):
     dataset, observed = _select_dataset(bundle, pair1, pair2, cell_line)
 
     entry = bundle["models"][dataset][FINAL_FAMILY]
+    expected = list(entry["feature_columns"])
     # Raises ValueError when a DRS signature is missing, so the API reports the
     # gap instead of scoring an incomplete feature vector.
     features = make_family_frame(FINAL_FAMILY, pair1, pair2, cell_line,
-                                 entry["cell_line_categories"])
-    expected = list(entry["feature_columns"])
+                                 entry["cell_line_categories"],
+                                 feature_columns=expected)
     if list(features.columns) != expected:
         raise RuntimeError(
             "DRS feature layout does not match the trained model "
@@ -143,7 +144,8 @@ def predict(drug1_input, drug2_input, cell_line):
             value = score
         else:
             frame = make_family_frame(family, pair1, pair2, cell_line,
-                                      model_entry["cell_line_categories"])
+                                      model_entry["cell_line_categories"],
+                                      feature_columns=model_entry["feature_columns"])
             value = float(model_entry["model"].predict(frame)[0])
         metrics = model_entry["metrics"]
         family_scores.append({
